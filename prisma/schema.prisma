@@ -10,25 +10,52 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model News {
+//  Schemat głównego itema w bazie wiedzy - posiada relację do SeriesItemRelations
+
+model Item {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
   deletedAt DateTime?
-  title String
-  slug String
-  image String?
-  content String? @db.Text
-  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId Int
+  name String
+  checkPermissions Boolean @default(true)
+  onlyForTeachers Boolean @default(true)
+  downloadHash String @unique
+  SeriesItemRelations SeriesItemRelations[]
 }
 
-model User {
+//  Schemat serii wydawniczych - posiada relację do SeriesItemRelations
+
+model Series {
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
   deletedAt DateTime?
-  username String @unique
-  password String 
-  News News[]
+  name String
+  SeriesItemRelations SeriesItemRelations[]
 }
+
+//  Tabela relacyjna dla Serii i Itemów, 1 Item : n Serii
+
+model SeriesItemRelations {
+  id Int @id @default(autoincrement())
+  seriesId Int
+  itemId Int
+  series Series @relation(fields: [seriesId], references: [id])
+  item Item @relation(fields: [itemId], references: [id])
+}
+
+//  Tabela dla głównych kategorii -> języki, wychowanie przedszkolne itp
+
+model MainCategories {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
+  fullName String
+  shortName String
+  crmName String
+  isLanguage Boolean @default(true)
+  hasSubcategories Boolean @default(true)
+}
+

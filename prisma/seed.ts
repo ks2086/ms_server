@@ -38,7 +38,7 @@ async function seed(){
             })
         })
     )
-    const user = await db.user.findFirst({
+    const userObj = await db.user.findFirst({
         where: {
             username: "test@test.pl"
         }
@@ -47,13 +47,13 @@ async function seed(){
     await Promise.all(
         getNews().map((news) => {
             const {title, slug} = news;
-            return db.news.create({
-                data: {
-                    title,
-                    slug,
-                    author: {connect: {id: 1}}
-                }
-            })
+                return db.news.create({
+                    data: {
+                        title,
+                        slug,
+                        author: {connect: {id: userObj?.id}}
+                    }
+                })
         })
     )
 }

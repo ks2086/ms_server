@@ -13,8 +13,14 @@ export const listNews = async () : Promise<News[]> => {
             id: true,
             title: true,
             slug: true,
-            createdAt: true
-        }
+            createdAt: true,
+            author: {
+                select: {
+                    id: true,
+                    username: true
+                }
+            }
+        },
     })
 }
 
@@ -24,7 +30,13 @@ export const singleNewsById = async (id: number) : Promise<News | null> => {
             id: true,
             title: true,
             slug: true,
-            createdAt: true
+            createdAt: true,
+            author: {
+                select: {
+                    id: true,
+                    username: true
+                }
+            }
         },
         where: {
             id
